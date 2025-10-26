@@ -38,7 +38,6 @@ export default function Header() {
 
           {/* Mobile menu button */}
           <div className="flex items-center space-x-2">
-            <ThemeToggle />
             <button
               className="md:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -66,6 +65,9 @@ export default function Header() {
             <Link href="#contact" className="block py-2 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400">
               Kontak
             </Link>
+            <div className="py-2">
+              <ThemeToggle />
+            </div>
           </div>
         )}
       </nav>

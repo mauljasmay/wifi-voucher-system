@@ -344,7 +344,6 @@ export default function Home() {
               transition={{ delay: 0.5 }}
               className="flex items-center space-x-2"
             >
-              <ThemeToggle />
               <Button
                 variant="ghost"
                 size="icon"
@@ -420,6 +419,9 @@ export default function Home() {
                 >
                   Kontak
                 </motion.a>
+                <div className="py-2">
+                  <ThemeToggle />
+                </div>
                 <Button 
                   onClick={() => window.location.href = '/dashboard'}
                   className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black hover:from-yellow-500 hover:to-orange-600"
