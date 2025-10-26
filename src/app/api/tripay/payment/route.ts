@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         }
       ],
       callback_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/tripay/callback`,
-      return_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/voucher/payment-status`,
+      return_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/vouchers/payment-status`,
       expired_time: Math.floor(Date.now() / 1000) + (24 * 60 * 60), // 24 hours expiry
       signature: generateSignature(payload)
     }

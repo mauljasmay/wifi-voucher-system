@@ -27,7 +27,7 @@ export default function Header() {
             <Link href="#locations" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
               Lokasi
             </Link>
-            <Link href="/voucher" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors font-semibold">
+            <Link href="/vouchers" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors font-semibold">
               Beli Voucher
             </Link>
             <Link href="#contact" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
@@ -60,7 +60,7 @@ export default function Header() {
             <Link href="#locations" className="block py-2 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400">
               Lokasi
             </Link>
-            <Link href="/voucher" className="block py-2 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 font-semibold">
+            <Link href="/vouchers" className="block py-2 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 font-semibold">
               Beli Voucher
             </Link>
             <Link href="#contact" className="block py-2 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400">

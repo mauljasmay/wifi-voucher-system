@@ -305,7 +305,7 @@ export default function Home() {
                 </motion.a>
               ))}
               <motion.a
-                href="/voucher"
+                href="/vouchers"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 }}
@@ -403,7 +403,7 @@ export default function Home() {
                   </motion.a>
                 ))}
                 <motion.a
-                  href="/voucher"
+                  href="/vouchers"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.1 }}
@@ -500,7 +500,7 @@ export default function Home() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className="bg-gradient-to-r from-yellow-400 to-orange-500 text-black hover:from-yellow-500 hover:to-orange-600 text-lg px-8 py-3 rounded-lg font-semibold flex items-center justify-center"
-                onClick={() => window.location.href = '/voucher'}
+                onClick={() => window.location.href = '/vouchers'}
               >
                 <Wifi className="mr-2 h-5 w-5" />
                 Beli Voucher Sekarang
@@ -846,7 +846,7 @@ export default function Home() {
                       <CardFooter>
                         <Button 
                           className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black hover:from-yellow-500 hover:to-orange-600"
-                          onClick={() => window.location.href = '/voucher'}
+                          onClick={() => window.location.href = '/vouchers'}
                         >
                           Beli Sekarang
                         </Button>
