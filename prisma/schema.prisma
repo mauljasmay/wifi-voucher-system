@@ -13,12 +13,107 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Voucher {
+  id          String   @id @default(cuid())
+  name        String
+  price       Int
+  duration    String
+  description String?
+  popular     Boolean  @default(false)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  transactions Transaction[]
+}
+
+model WebsiteSettings {
+  id          String   @id @default(cuid())
+  siteName    String   @default("MLJ-NET")
+  siteTitle   String   @default("MLJ-NET - WiFi Hotspot Voucher Tercepat")
+  description String   @default("Provider internet hotspot terpercaya dengan voucher WiFi murah dan cepat")
+  keywords    String?
+  contactEmail String?
+  contactPhone String?
+  contactAddress String?
+  logoUrl     String?
+  faviconUrl  String?
+  primaryColor String  @default("#facc15")
+  secondaryColor String @default("#f97316")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PaymentSettings {
+  id              String   @id @default(cuid())
+  qrisEnabled     Boolean  @default(true)
+  qrisImageUrl    String?
+  transferEnabled Boolean  @default(true)
+  bankName        String?
+  bankAccount     String?
+  bankNumber      String?
+  ewalletEnabled  Boolean  @default(true)
+  goPayNumber     String?
+  ovoNumber       String?
+  danaNumber      String?
+  linkAjaNumber   String?
+  // Tripay Integration Settings
+  tripayEnabled   Boolean  @default(false)
+  tripayApiKey    String?
+  tripayPrivateKey String?
+  tripayMerchantCode String?
+  tripayMode      String   @default("SANDBOX") // SANDBOX or PRODUCTION
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Transaction {
+  id            String   @id @default(cuid())
+  voucherId     String
+  userId        String?
+  customerName  String?
+  customerEmail String?
+  customerPhone String
+  paymentMethod String
+  amount        Int
+  status        String   @default("pending")
+  voucherCode   String?
+  // Tripay Integration Fields
+  tripayReference String?
+  tripayPaymentUrl String?
+  tripayPaymentChannel String?
+  tripayPaymentMethod String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  voucher       Voucher  @relation(fields: [voucherId], references: [id])
+  user          User?    @relation(fields: [userId], references: [id])
+}
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
   name      String?
+  phone     String?
+  address   String?
+  plan      String   @default("basic") // basic, premium, business
+  status    String   @default("active") // active, inactive, expired
+  startDate DateTime @default(now())
+  endDate   DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  
+  transactions Transaction[]
 }
 
 model Post {

@@ -1,141 +1,292 @@
-# 🚀 Welcome to Z.ai Code Scaffold
+# 📱 WiFi Voucher System - QRIS Payment Integration
 
-A modern, production-ready web application scaffold powered by cutting-edge technologies, designed to accelerate your development with [Z.ai](https://chat.z.ai)'s AI-powered coding assistance.
+A modern WiFi Voucher sales system built with Next.js, integrating Tripay QRIS payment gateway for seamless digital transactions in Indonesia.
 
-## ✨ Technology Stack
+## 🌟 Features
 
-This scaffold provides a robust foundation built with:
+### 💳 Payment System
+- **QRIS Payment Integration** - Support all major Indonesian e-wallets (GoPay, OVO, Dana, etc.)
+- **Real-time Payment Status** - Automatic payment verification every 5 seconds
+- **24-hour Payment Window** - Countdown timer for payment expiration
+- **Automated Voucher Delivery** - Instant WhatsApp delivery upon successful payment
 
-### 🎯 Core Framework
-- **⚡ Next.js 15** - The React framework for production with App Router
-- **📘 TypeScript 5** - Type-safe JavaScript for better developer experience
-- **🎨 Tailwind CSS 4** - Utility-first CSS framework for rapid UI development
+### 🎫 Voucher Management
+- **Multiple Voucher Packages** - 1-hour, 1-day, 7-day options
+- **Dynamic Pricing** - Competitive pricing for different durations
+- **Automatic Code Generation** - Secure 12-character voucher codes
+- **Usage Instructions** - Detailed hotspot login guide
 
-### 🧩 UI Components & Styling
-- **🧩 shadcn/ui** - High-quality, accessible components built on Radix UI
-- **🎯 Lucide React** - Beautiful & consistent icon library
-- **🌈 Framer Motion** - Production-ready motion library for React
-- **🎨 Next Themes** - Perfect dark mode in 2 lines of code
+### 📱 User Experience
+- **Mobile-First Design** - Optimized for mobile devices
+- **Dark/Light Mode** - Theme toggle support
+- **WhatsApp Integration** - Only phone number required for checkout
+- **Responsive Layout** - Works seamlessly on all devices
 
-### 📋 Forms & Validation
-- **🎣 React Hook Form** - Performant forms with easy validation
-- **✅ Zod** - TypeScript-first schema validation
+## 🛠 Technology Stack
 
-### 🔄 State Management & Data Fetching
-- **🐻 Zustand** - Simple, scalable state management
-- **🔄 TanStack Query** - Powerful data synchronization for React
-- **🌐 Axios** - Promise-based HTTP client
+### Frontend
+- **Next.js 15** - React framework with App Router
+- **TypeScript** - Type-safe development
+- **Tailwind CSS** - Utility-first styling
+- **shadcn/ui** - Modern UI components
+- **Lucide Icons** - Beautiful icon set
 
-### 🗄️ Database & Backend
-- **🗄️ Prisma** - Next-generation Node.js and TypeScript ORM
-- **🔐 NextAuth.js** - Complete open-source authentication solution
+### Backend
+- **Next.js API Routes** - Server-side functionality
+- **Prisma ORM** - Database management
+- **SQLite** - Lightweight database
+- **Tripay API** - Payment gateway integration
 
-### 🎨 Advanced UI Features
-- **📊 TanStack Table** - Headless UI for building tables and datagrids
-- **🖱️ DND Kit** - Modern drag and drop toolkit for React
-- **📊 Recharts** - Redefined chart library built with React and D3
-- **🖼️ Sharp** - High performance image processing
-
-### 🌍 Internationalization & Utilities
-- **🌍 Next Intl** - Internationalization library for Next.js
-- **📅 Date-fns** - Modern JavaScript date utility library
-- **🪝 ReactUse** - Collection of essential React hooks for modern development
-
-## 🎯 Why This Scaffold?
-
-- **🏎️ Fast Development** - Pre-configured tooling and best practices
-- **🎨 Beautiful UI** - Complete shadcn/ui component library with advanced interactions
-- **🔒 Type Safety** - Full TypeScript configuration with Zod validation
-- **📱 Responsive** - Mobile-first design principles with smooth animations
-- **🗄️ Database Ready** - Prisma ORM configured for rapid backend development
-- **🔐 Auth Included** - NextAuth.js for secure authentication flows
-- **📊 Data Visualization** - Charts, tables, and drag-and-drop functionality
-- **🌍 i18n Ready** - Multi-language support with Next Intl
-- **🚀 Production Ready** - Optimized build and deployment settings
-- **🤖 AI-Friendly** - Structured codebase perfect for AI assistance
+### Deployment
+- **PM2** - Process management
+- **Nginx** - Reverse proxy
+- **Ubuntu 22.04** - Server environment
 
 ## 🚀 Quick Start
 
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+- Tripay API credentials
+
+### Installation
+
+1. **Clone the repository**
 ```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Start production server
-npm start
+git clone https://github.com/your-username/wifi-voucher-system.git
+cd wifi-voucher-system
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your application running.
+2. **Install dependencies**
+```bash
+npm install
+```
 
-## 🤖 Powered by Z.ai
+3. **Environment setup**
+```bash
+cp .env.example .env.local
+```
 
-This scaffold is optimized for use with [Z.ai](https://chat.z.ai) - your AI assistant for:
+Configure your environment variables:
+```env
+# Tripay Configuration
+TRIPAY_API_KEY=your_tripay_api_key
+TRIPAY_PRIVATE_KEY=your_tripay_private_key
+TRIPAY_MERCHANT_CODE=your_merchant_code
 
-- **💻 Code Generation** - Generate components, pages, and features instantly
-- **🎨 UI Development** - Create beautiful interfaces with AI assistance  
-- **🔧 Bug Fixing** - Identify and resolve issues with intelligent suggestions
-- **📝 Documentation** - Auto-generate comprehensive documentation
-- **🚀 Optimization** - Performance improvements and best practices
+# Database
+DATABASE_URL="file:./dev.db"
 
-Ready to build something amazing? Start chatting with Z.ai at [chat.z.ai](https://chat.z.ai) and experience the future of AI-powered development!
+# WhatsApp (optional)
+WHATSAPP_API_KEY=your_whatsapp_api_key
+```
+
+4. **Database setup**
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+5. **Start development server**
+```bash
+npm run dev
+```
+
+Visit `http://localhost:3000` to view the application.
 
 ## 📁 Project Structure
 
 ```
-src/
-├── app/                 # Next.js App Router pages
-├── components/          # Reusable React components
-│   └── ui/             # shadcn/ui components
-├── hooks/              # Custom React hooks
-└── lib/                # Utility functions and configurations
+├── src/
+│   ├── app/                 # Next.js App Router
+│   │   ├── api/            # API routes
+│   │   │   └── tripay/     # Tripay payment endpoints
+│   │   ├── globals.css     # Global styles
+│   │   ├── layout.tsx      # Root layout
+│   │   └── page.tsx        # Home page
+│   ├── components/         # React components
+│   │   ├── ui/            # shadcn/ui components
+│   │   └── voucher/       # Voucher-related components
+│   ├── lib/               # Utility functions
+│   │   ├── db.ts          # Database client
+│   │   ├── prisma.ts      # Prisma client
+│   │   ├── utils.ts       # Helper functions
+│   │   └── validators.ts  # Form validation
+│   └── types/             # TypeScript definitions
+├── prisma/
+│   └── schema.prisma      # Database schema
+├── public/                # Static assets
+└── README.md
 ```
 
-## 🎨 Available Features & Components
+## 💾 Database Schema
 
-This scaffold includes a comprehensive set of modern web development tools:
+### Vouchers
+- `id` - Unique identifier
+- `code` - 12-character voucher code
+- `duration` - Voucher duration (hours)
+- `price` - Price in IDR
+- `isUsed` - Usage status
+- `createdAt` - Creation timestamp
+- `usedAt` - Usage timestamp
 
-### 🧩 UI Components (shadcn/ui)
-- **Layout**: Card, Separator, Aspect Ratio, Resizable Panels
-- **Forms**: Input, Textarea, Select, Checkbox, Radio Group, Switch
-- **Feedback**: Alert, Toast (Sonner), Progress, Skeleton
-- **Navigation**: Breadcrumb, Menubar, Navigation Menu, Pagination
-- **Overlay**: Dialog, Sheet, Popover, Tooltip, Hover Card
-- **Data Display**: Badge, Avatar, Calendar
+### Orders
+- `id` - Unique identifier
+- `reference` - Tripay reference
+- `whatsappNumber` - Customer WhatsApp
+- `voucherId` - Associated voucher
+- `amount` - Payment amount
+- `status` - Payment status
+- `paymentMethod` - Payment method
+- `createdAt` - Order timestamp
 
-### 📊 Advanced Data Features
-- **Tables**: Powerful data tables with sorting, filtering, pagination (TanStack Table)
-- **Charts**: Beautiful visualizations with Recharts
-- **Forms**: Type-safe forms with React Hook Form + Zod validation
+## 🔄 Payment Flow
 
-### 🎨 Interactive Features
-- **Animations**: Smooth micro-interactions with Framer Motion
-- **Drag & Drop**: Modern drag-and-drop functionality with DND Kit
-- **Theme Switching**: Built-in dark/light mode support
+1. **Package Selection** - User chooses voucher package
+2. **WhatsApp Input** - User enters WhatsApp number
+3. **Payment Generation** - System creates Tripay payment order
+4. **QR Code Display** - QRIS code shown for scanning
+5. **Payment Verification** - System checks payment status every 5 seconds
+6. **Voucher Delivery** - Automatic WhatsApp delivery upon success
 
-### 🔐 Backend Integration
-- **Authentication**: Ready-to-use auth flows with NextAuth.js
-- **Database**: Type-safe database operations with Prisma
-- **API Client**: HTTP requests with Axios + TanStack Query
-- **State Management**: Simple and scalable with Zustand
+## 📱 API Endpoints
 
-### 🌍 Production Features
-- **Internationalization**: Multi-language support with Next Intl
-- **Image Optimization**: Automatic image processing with Sharp
-- **Type Safety**: End-to-end TypeScript with Zod validation
-- **Essential Hooks**: 100+ useful React hooks with ReactUse for common patterns
+### Payment
+- `POST /api/tripay/payment` - Create payment order
+- `POST /api/tripay/callback` - Handle payment callback
+- `GET /api/tripay/status/:reference` - Check payment status
 
-## 🤝 Get Started with Z.ai
+### Vouchers
+- `GET /api/vouchers` - List available vouchers
+- `POST /api/vouchers` - Create new voucher
+- `GET /api/vouchers/:code` - Get voucher details
 
-1. **Clone this scaffold** to jumpstart your project
-2. **Visit [chat.z.ai](https://chat.z.ai)** to access your AI coding assistant
-3. **Start building** with intelligent code generation and assistance
-4. **Deploy with confidence** using the production-ready setup
+## 🎨 UI Components
+
+### Core Components
+- `VoucherCard` - Voucher package display
+- `PaymentModal` - Payment interface
+- `QRCodeDisplay` - QR code visualization
+- `CountdownTimer` - Payment countdown
+- `StatusIndicator` - Payment status
+
+### Features
+- Responsive design for all screen sizes
+- Dark/light theme support
+- Loading states and error handling
+- Smooth animations and transitions
+
+## 🔧 Configuration
+
+### Tripay Setup
+1. Register at [Tripay Dashboard](https://tripay.co.id/)
+2. Create a new payment channel
+3. Enable QRIS payment method
+4. Copy API credentials to environment variables
+
+### WhatsApp Integration (Optional)
+- Configure WhatsApp Business API
+- Set up webhook for message sending
+- Add API key to environment variables
+
+## 🚀 Deployment
+
+### Production Build
+```bash
+npm run build
+npm start
+```
+
+### PM2 Process Management
+```bash
+pm2 start npm --name "wifi-voucher" -- start
+pm2 save
+pm2 startup
+```
+
+### Nginx Configuration
+```nginx
+server {
+    listen 80;
+    server_name your-domain.com;
+    
+    location / {
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
+```
+
+## 🧪 Testing
+
+### Linting
+```bash
+npm run lint
+```
+
+### Type Checking
+```bash
+npm run type-check
+```
+
+## 📊 Monitoring
+
+### Logs
+- Application logs: `server.log`
+- Development logs: `dev.log`
+- Error tracking with structured logging
+
+### Performance
+- Next.js built-in analytics
+- Database query optimization
+- Image optimization with Next.js Image component
+
+## 🔒 Security
+
+### Implementation
+- Environment variable protection
+- API key encryption
+- Input validation and sanitization
+- CSRF protection
+- Rate limiting on API endpoints
+
+### Best Practices
+- Regular dependency updates
+- Security headers configuration
+- HTTPS enforcement in production
+- Database connection encryption
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📞 Support
+
+For support and questions:
+- 📧 Email: support@your-domain.com
+- 💬 WhatsApp: +62 812-3456-7890
+- 🐛 Issues: [GitHub Issues](https://github.com/your-username/wifi-voucher-system/issues)
+
+## 🙏 Acknowledgments
+
+- [Next.js](https://nextjs.org/) - The React framework
+- [Tripay](https://tripay.co.id/) - Payment gateway
+- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
+- [shadcn/ui](https://ui.shadcn.com/) - UI components
+- [Prisma](https://prisma.io/) - Database ORM
 
 ---
 
-Built with ❤️ for the developer community. Supercharged by [Z.ai](https://chat.z.ai) 🚀
+**Built with ❤️ for Indonesian WiFi Voucher Market**
