@@ -1,13 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { 
   Wifi, 
@@ -34,25 +33,6 @@ interface Voucher {
   active: boolean
 }
 
-interface TripayChannel {
-  code: string
-  name: string
-  icon: string
-  active: boolean
-  fee: {
-    flat: number
-    percent: string
-  }
-  total_fee: {
-    flat: number
-    percent: string
-  }
-  instructions: {
-    title: string
-    steps: string[]
-  }[]
-}
-
 interface PaymentSettings {
   qrisEnabled: boolean
   transferEnabled: boolean
@@ -70,20 +50,20 @@ interface PaymentSettings {
 export default function VouchersPage() {
   const [vouchers, setVouchers] = useState<Voucher[]>([])
   const [paymentSettings, setPaymentSettings] = useState<PaymentSettings | null>(null)
-  const [tripayChannels, setTripayChannels] = useState<TripayChannel[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isProcessing, setIsProcessing] = useState(false)
   const [selectedVoucher, setSelectedVoucher] = useState<Voucher | null>(null)
   const [orderData, setOrderData] = useState({
-    customerName: '',
-    customerEmail: '',
+    customerName: 'KasirOnline',
+    customerEmail: 'pelanggan@mljnet.id',
     customerPhone: '',
-    paymentMethod: '',
+    paymentMethod: 'qris',
     tripayChannel: ''
   })
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [paymentUrl, setPaymentUrl] = useState('')
+  const phoneInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     fetchVouchers()
@@ -110,26 +90,9 @@ export default function VouchersPage() {
       const data = await response.json()
       if (data.paymentSettings) {
         setPaymentSettings(data.paymentSettings)
-        
-        // Fetch Tripay channels if enabled
-        if (data.paymentSettings.tripayEnabled) {
-          fetchTripayChannels()
-        }
       }
     } catch (error) {
       console.error('Error fetching payment settings:', error)
-    }
-  }
-
-  const fetchTripayChannels = async () => {
-    try {
-      const response = await fetch('/api/tripay/channels')
-      const data = await response.json()
-      if (data.success) {
-        setTripayChannels(data.data.filter((channel: TripayChannel) => channel.active))
-      }
-    } catch (error) {
-      console.error('Error fetching Tripay channels:', error)
     }
   }
 
@@ -138,6 +101,11 @@ export default function VouchersPage() {
     setError('')
     setSuccess('')
     setPaymentUrl('')
+    
+    // Auto-focus phone input when dialog opens
+    setTimeout(() => {
+      phoneInputRef.current?.focus()
+    }, 100)
   }
 
   const handleSubmitOrder = async (e: React.FormEvent) => {
@@ -149,73 +117,49 @@ export default function VouchersPage() {
     setSuccess('')
 
     try {
-      let response
+      // Always use QRIS payment
+      const response = await fetch('/api/tripay/payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: selectedVoucher.price,
+          phone: orderData.customerPhone,
+          packageName: selectedVoucher.name,
+        }),
+      })
 
-      if (orderData.paymentMethod === 'tripay' && orderData.tripayChannel) {
-        // Create Tripay transaction
-        response = await fetch('/api/tripay/transaction', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            voucherId: selectedVoucher.id,
-            customerName: orderData.customerName,
-            customerEmail: orderData.customerEmail,
-            customerPhone: orderData.customerPhone,
-            paymentMethod: orderData.tripayChannel,
-          }),
-        })
-
-        const data = await response.json()
+      const data = await response.json()
+      
+      if (data.success) {
+        setPaymentUrl(data.data.pay_url)
+        setSuccess('Pembayaran QRIS berhasil dibuat! Anda akan diarahkan ke halaman pembayaran.')
         
-        if (data.success) {
-          setPaymentUrl(data.data.paymentUrl)
-          setSuccess('Transaksi berhasil dibuat! Anda akan diarahkan ke halaman pembayaran.')
-          
-          // Redirect to payment URL after 2 seconds
-          setTimeout(() => {
-            window.open(data.data.paymentUrl, '_blank')
-          }, 2000)
-        } else {
-          setError(data.error || 'Gagal membuat transaksi')
-        }
+        // Redirect to payment URL after 2 seconds
+        setTimeout(() => {
+          window.open(data.data.pay_url, '_blank')
+        }, 2000)
       } else {
-        // Create regular transaction
-        response = await fetch('/api/transactions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            voucherId: selectedVoucher.id,
-            customerName: orderData.customerName,
-            customerEmail: orderData.customerEmail,
-            customerPhone: orderData.customerPhone,
-            paymentMethod: orderData.paymentMethod,
-          }),
-        })
-
-        const data = await response.json()
-        
-        if (response.ok) {
-          setSuccess('Pesanan berhasil dibuat! Silakan lakukan pembayaran.')
-          setSelectedVoucher(null)
-          setOrderData({
-            customerName: '',
-            customerEmail: '',
-            customerPhone: '',
-            paymentMethod: '',
-            tripayChannel: ''
-          })
-        } else {
-          setError(data.error || 'Gagal membuat pesanan')
-        }
+        setError(data.error || 'Gagal membuat pembayaran QRIS')
       }
     } catch (error) {
       setError('Terjadi kesalahan. Silakan coba lagi.')
     } finally {
       setIsProcessing(false)
+    }
+  }
+
+  // Auto-submit when phone number is entered (minimum 10 digits)
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const phone = e.target.value
+    setOrderData(prev => ({ ...prev, customerPhone: phone }))
+    
+    // Auto-submit when phone number has at least 10 digits
+    if (phone.length >= 10 && selectedVoucher) {
+      setTimeout(() => {
+        handleSubmitOrder(e as any)
+      }, 500)
     }
   }
 
@@ -343,7 +287,7 @@ export default function VouchersPage() {
                         <DialogHeader>
                           <DialogTitle>Pesan Voucher</DialogTitle>
                           <DialogDescription className="text-gray-400">
-                            Isi data Anda untuk melanjutkan pembelian
+                            Masukkan nomor WhatsApp untuk pembayaran QRIS otomatis
                           </DialogDescription>
                         </DialogHeader>
                         
@@ -357,115 +301,50 @@ export default function VouchersPage() {
                               </p>
                             </div>
 
-                            <div className="space-y-2">
-                              <Label htmlFor="customerName">Nama Lengkap</Label>
-                              <Input
-                                id="customerName"
-                                value={orderData.customerName}
-                                onChange={(e) => setOrderData(prev => ({ ...prev, customerName: e.target.value }))}
-                                placeholder="Masukkan nama lengkap"
-                                className="bg-gray-700 border-gray-600"
-                                required
-                              />
-                            </div>
+                            {/* Hidden name input - auto-filled with KasirOnline */}
+                            <input
+                              type="hidden"
+                              name="customerName"
+                              value={orderData.customerName}
+                              readOnly
+                            />
 
-                            <div className="space-y-2">
-                              <Label htmlFor="customerEmail">Email</Label>
-                              <Input
-                                id="customerEmail"
-                                type="email"
-                                value={orderData.customerEmail}
-                                onChange={(e) => setOrderData(prev => ({ ...prev, customerEmail: e.target.value }))}
-                                placeholder="email@example.com"
-                                className="bg-gray-700 border-gray-600"
-                              />
-                            </div>
+                            {/* Hidden email input - auto-filled with pelanggan@mljnet.id */}
+                            <input
+                              type="hidden"
+                              name="customerEmail"
+                              value={orderData.customerEmail}
+                              readOnly
+                            />
 
                             <div className="space-y-2">
                               <Label htmlFor="customerPhone">Nomor WhatsApp</Label>
                               <Input
+                                ref={phoneInputRef}
                                 id="customerPhone"
                                 value={orderData.customerPhone}
-                                onChange={(e) => setOrderData(prev => ({ ...prev, customerPhone: e.target.value }))}
+                                onChange={handlePhoneChange}
                                 placeholder="08xx-xxxx-xxxx"
-                                className="bg-gray-700 border-gray-600"
+                                className="bg-gray-700 border-gray-600 text-lg"
                                 required
                               />
+                              <p className="text-sm text-gray-400">Masukkan nomor WhatsApp, pembayaran QRIS akan otomatis diproses</p>
                             </div>
 
-                            <div className="space-y-2">
-                              <Label>Metode Pembayaran</Label>
-                              <Select
-                                value={orderData.paymentMethod}
-                                onValueChange={(value) => setOrderData(prev => ({ ...prev, paymentMethod: value, tripayChannel: '' }))}
-                              >
-                                <SelectTrigger className="bg-gray-700 border-gray-600">
-                                  <SelectValue placeholder="Pilih metode pembayaran" />
-                                </SelectTrigger>
-                                <SelectContent className="bg-gray-700 border-gray-600">
-                                  {paymentSettings?.qrisEnabled && (
-                                    <SelectItem value="qris">
-                                      <div className="flex items-center space-x-2">
-                                        <QrCode className="h-4 w-4" />
-                                        <span>QRIS</span>
-                                      </div>
-                                    </SelectItem>
-                                  )}
-                                  {paymentSettings?.transferEnabled && (
-                                    <SelectItem value="transfer">
-                                      <div className="flex items-center space-x-2">
-                                        <Building className="h-4 w-4" />
-                                        <span>Transfer Bank</span>
-                                      </div>
-                                    </SelectItem>
-                                  )}
-                                  {paymentSettings?.ewalletEnabled && (
-                                    <SelectItem value="ewallet">
-                                      <div className="flex items-center space-x-2">
-                                        <Smartphone className="h-4 w-4" />
-                                        <span>E-Wallet</span>
-                                      </div>
-                                    </SelectItem>
-                                  )}
-                                  {paymentSettings?.tripayEnabled && (
-                                    <SelectItem value="tripay">
-                                      <div className="flex items-center space-x-2">
-                                        <Globe className="h-4 w-4" />
-                                        <span>Tripay Payment Gateway</span>
-                                      </div>
-                                    </SelectItem>
-                                  )}
-                                </SelectContent>
-                              </Select>
-                            </div>
-
-                            {orderData.paymentMethod === 'tripay' && (
-                              <div className="space-y-2">
-                                <Label>Channel Pembayaran</Label>
-                                <Select
-                                  value={orderData.tripayChannel}
-                                  onValueChange={(value) => setOrderData(prev => ({ ...prev, tripayChannel: value }))}
-                                >
-                                  <SelectTrigger className="bg-gray-700 border-gray-600">
-                                    <SelectValue placeholder="Pilih channel pembayaran" />
-                                  </SelectTrigger>
-                                  <SelectContent className="bg-gray-700 border-gray-600 max-h-60 overflow-y-auto">
-                                    {tripayChannels.map((channel) => (
-                                      <SelectItem key={channel.code} value={channel.code}>
-                                        <div className="flex items-center space-x-2">
-                                          <span>{channel.name}</span>
-                                        </div>
-                                      </SelectItem>
-                                    ))}
-                                  </SelectContent>
-                                </Select>
+                            {/* Payment method - Auto QRIS */}
+                            <div className="bg-yellow-400/10 border border-yellow-400/30 rounded-lg p-3">
+                              <div className="flex items-center space-x-2 mb-2">
+                                <QrCode className="h-5 w-5 text-yellow-400" />
+                                <span className="font-medium text-yellow-400">Pembayaran QRIS Otomatis</span>
                               </div>
-                            )}
+                              <p className="text-sm text-gray-300">Pembayaran akan otomatis menggunakan QRIS setelah Anda memasukkan nomor WhatsApp</p>
+                            </div>
 
+                            {/* Hidden submit button - form auto-submits */}
                             <Button
                               type="submit"
-                              className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black hover:from-yellow-500 hover:to-orange-600"
-                              disabled={isProcessing || !orderData.customerPhone || !orderData.paymentMethod || (orderData.paymentMethod === 'tripay' && !orderData.tripayChannel)}
+                              className="hidden"
+                              disabled={isProcessing || !orderData.customerPhone}
                             >
                               {isProcessing ? (
                                 <>
@@ -476,6 +355,13 @@ export default function VouchersPage() {
                                 'Buat Pesanan'
                               )}
                             </Button>
+                            
+                            {isProcessing && (
+                              <div className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-black py-3 rounded-lg flex items-center justify-center">
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                <span>Membuat Pembayaran QRIS...</span>
+                              </div>
+                            )}
                           </form>
                         )}
                       </DialogContent>
