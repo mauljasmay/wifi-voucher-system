@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,148 +8,133 @@ datasource db {
 }
 
 model Admin {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String    @id @default(cuid())
+  email     String    @unique
   password  String
   name      String
-  role      Role     @default(ADMIN)
-  isActive  Boolean  @default(true)
+  role      Role      @default("ADMIN")
+  isActive  Boolean   @default(true)
   lastLogin DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-enum Role {
-  SUPER_ADMIN
-  ADMIN
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Voucher {
-  id          String   @id @default(cuid())
-  name        String
-  price       Int
-  duration    String
-  description String?
-  popular     Boolean  @default(false)
-  active      Boolean  @default(true)
-  // MikroTik Integration Fields
-  mikrotikProfile    String?
-  timeLimit          String?  // e.g., "1h", "1d", "1w"
-  dataLimit          String?  // e.g., "1GB", "500MB"
-  autoCreate         Boolean  @default(false)
-  syncWithMikrotik   Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  transactions Transaction[]
+  id               String        @id @default(cuid())
+  name             String
+  price            Int
+  duration         String
+  description      String?
+  popular          Boolean       @default(false)
+  active           Boolean       @default(true)
+  mikrotikProfile  String?
+  timeLimit        String?
+  dataLimit        String?
+  autoCreate       Boolean       @default(false)
+  syncWithMikrotik Boolean       @default(false)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  transactions     Transaction[]
 }
 
 model WebsiteSettings {
-  id          String   @id @default(cuid())
-  siteName    String   @default("MLJ-NET")
-  siteTitle   String   @default("MLJ-NET - WiFi Hotspot Voucher Tercepat")
-  description String   @default("Provider internet hotspot terpercaya dengan voucher WiFi murah dan cepat")
-  keywords    String?
-  contactEmail String?
-  contactPhone String?
+  id             String   @id @default(cuid())
+  siteName       String   @default("MLJ-NET")
+  siteTitle      String   @default("MLJ-NET - WiFi Hotspot Voucher Tercepat")
+  description    String   @default("Provider internet hotspot terpercaya dengan voucher WiFi murah dan cepat")
+  keywords       String?
+  contactEmail   String?
+  contactPhone   String?
   contactAddress String?
-  logoUrl     String?
-  faviconUrl  String?
-  primaryColor String  @default("#facc15")
-  secondaryColor String @default("#f97316")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  logoUrl        String?
+  faviconUrl     String?
+  primaryColor   String   @default("#facc15")
+  secondaryColor String   @default("#f97316")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
 
 model PaymentSettings {
-  id              String   @id @default(cuid())
-  qrisEnabled     Boolean  @default(true)
-  qrisImageUrl    String?
-  transferEnabled Boolean  @default(true)
-  bankName        String?
-  bankAccount     String?
-  bankNumber      String?
-  ewalletEnabled  Boolean  @default(true)
-  goPayNumber     String?
-  ovoNumber       String?
-  danaNumber      String?
-  linkAjaNumber   String?
-  // Tripay Integration Settings
-  tripayEnabled   Boolean  @default(false)
-  tripayApiKey    String?
-  tripayPrivateKey String?
+  id                 String   @id @default(cuid())
+  qrisEnabled        Boolean  @default(true)
+  qrisImageUrl       String?
+  transferEnabled    Boolean  @default(true)
+  bankName           String?
+  bankAccount        String?
+  bankNumber         String?
+  ewalletEnabled     Boolean  @default(true)
+  goPayNumber        String?
+  ovoNumber          String?
+  danaNumber         String?
+  linkAjaNumber      String?
+  tripayEnabled      Boolean  @default(false)
+  tripayApiKey       String?
+  tripayPrivateKey   String?
   tripayMerchantCode String?
-  tripayMode      String   @default("SANDBOX") // SANDBOX or PRODUCTION
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  tripayMode         String   @default("SANDBOX")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }
 
 model MikroTikSettings {
-  id            String   @id @default(cuid())
-  name          String   @default("Default MikroTik")
-  host          String
-  port          Int      @default(8728)
-  username      String
-  password      String
-  version       String   @default("v6") // v6 or v7
-  useSSL        Boolean  @default(false)
-  timeout       Int      @default(10000)
-  isActive      Boolean  @default(true)
-  // Hotspot Settings
-  hotspotInterface String?  // e.g., "ether1", "wlan1"
-  hotspotName     String?  // e.g., "MLJ-NET Hotspot"
-  // Default Profile Settings
-  defaultProfile  String?
-  // Connection Test
-  lastConnected   DateTime?
-  connectionStatus String   @default("never") // never, connected, failed
-  errorMessage    String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id               String    @id @default(cuid())
+  name             String    @default("Default MikroTik")
+  host             String
+  port             Int       @default(8728)
+  username         String
+  password         String
+  version          String    @default("v6")
+  useSSL           Boolean   @default(false)
+  timeout          Int       @default(10000)
+  isActive         Boolean   @default(true)
+  hotspotInterface String?
+  hotspotName      String?
+  defaultProfile   String?
+  lastConnected    DateTime?
+  connectionStatus String    @default("never")
+  errorMessage     String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }
 
 model Transaction {
-  id            String   @id @default(cuid())
-  voucherId     String
-  userId        String?
-  customerName  String?
-  customerEmail String?
-  customerPhone String
-  paymentMethod String
-  amount        Int
-  status        String   @default("pending")
-  voucherCode   String?
-  // MikroTik Integration Fields
-  mikrotikUsername String?
-  mikrotikPassword String?
-  mikrotikProfile  String?
-  mikrotikCreated   Boolean  @default(false)
-  mikrotikSynced    Boolean  @default(false)
-  // Tripay Integration Fields
-  tripayReference String?
-  tripayPaymentUrl String?
+  id                   String   @id @default(cuid())
+  voucherId            String
+  userId               String?
+  customerName         String?
+  customerEmail        String?
+  customerPhone        String
+  paymentMethod        String
+  amount               Int
+  status               String   @default("pending")
+  voucherCode          String?
+  mikrotikUsername     String?
+  mikrotikPassword     String?
+  mikrotikProfile      String?
+  mikrotikCreated      Boolean  @default(false)
+  mikrotikSynced       Boolean  @default(false)
+  tripayReference      String?
+  tripayPaymentUrl     String?
   tripayPaymentChannel String?
-  tripayPaymentMethod String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  
-  voucher       Voucher  @relation(fields: [voucherId], references: [id])
-  user          User?    @relation(fields: [userId], references: [id])
+  tripayPaymentMethod  String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  user                 User?    @relation(fields: [userId], references: [id])
+  voucher              Voucher  @relation(fields: [voucherId], references: [id])
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  phone     String?
-  address   String?
-  plan      String   @default("basic") // basic, premium, business
-  status    String   @default("active") // active, inactive, expired
-  startDate DateTime @default(now())
-  endDate   DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
+  id           String        @id @default(cuid())
+  email        String        @unique
+  name         String?
+  phone        String?
+  address      String?
+  plan         String        @default("basic")
+  status       String        @default("active")
+  startDate    DateTime      @default(now())
+  endDate      DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
   transactions Transaction[]
 }
 
@@ -167,4 +146,9 @@ model Post {
   authorId  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
 }
