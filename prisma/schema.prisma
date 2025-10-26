@@ -18,9 +18,16 @@ model Admin {
   email     String   @unique
   password  String
   name      String
-  role      String   @default("admin")
+  role      Role     @default(ADMIN)
+  isActive  Boolean  @default(true)
+  lastLogin DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
 }
 
 model Voucher {

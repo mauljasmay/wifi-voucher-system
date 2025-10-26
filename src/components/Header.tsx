@@ -33,6 +33,9 @@ export default function Header() {
             <Link href="#contact" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
               Kontak
             </Link>
+            <Link href="/admin/login" className="text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400 transition-colors">
+              Admin
+            </Link>
             <ThemeToggle />
           </div>
 
@@ -64,6 +67,9 @@ export default function Header() {
             </Link>
             <Link href="#contact" className="block py-2 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400">
               Kontak
+            </Link>
+            <Link href="/admin/login" className="block py-2 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400">
+              Admin
             </Link>
             <div className="py-2">
               <ThemeToggle />
