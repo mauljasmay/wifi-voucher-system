@@ -38,6 +38,12 @@ model Voucher {
   description String?
   popular     Boolean  @default(false)
   active      Boolean  @default(true)
+  // MikroTik Integration Fields
+  mikrotikProfile    String?
+  timeLimit          String?  // e.g., "1h", "1d", "1w"
+  dataLimit          String?  // e.g., "1GB", "500MB"
+  autoCreate         Boolean  @default(false)
+  syncWithMikrotik   Boolean  @default(false)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   
@@ -84,6 +90,30 @@ model PaymentSettings {
   updatedAt       DateTime @updatedAt
 }
 
+model MikroTikSettings {
+  id            String   @id @default(cuid())
+  name          String   @default("Default MikroTik")
+  host          String
+  port          Int      @default(8728)
+  username      String
+  password      String
+  version       String   @default("v6") // v6 or v7
+  useSSL        Boolean  @default(false)
+  timeout       Int      @default(10000)
+  isActive      Boolean  @default(true)
+  // Hotspot Settings
+  hotspotInterface String?  // e.g., "ether1", "wlan1"
+  hotspotName     String?  // e.g., "MLJ-NET Hotspot"
+  // Default Profile Settings
+  defaultProfile  String?
+  // Connection Test
+  lastConnected   DateTime?
+  connectionStatus String   @default("never") // never, connected, failed
+  errorMessage    String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
 model Transaction {
   id            String   @id @default(cuid())
   voucherId     String
@@ -95,6 +125,12 @@ model Transaction {
   amount        Int
   status        String   @default("pending")
   voucherCode   String?
+  // MikroTik Integration Fields
+  mikrotikUsername String?
+  mikrotikPassword String?
+  mikrotikProfile  String?
+  mikrotikCreated   Boolean  @default(false)
+  mikrotikSynced    Boolean  @default(false)
   // Tripay Integration Fields
   tripayReference String?
   tripayPaymentUrl String?

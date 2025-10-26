@@ -15,7 +15,8 @@ import {
   Shield,
   UserPlus,
   Activity,
-  TrendingUp
+  TrendingUp,
+  Server
 } from 'lucide-react';
 
 interface DashboardStats {
@@ -212,6 +213,14 @@ export default function AdminDashboard() {
               >
                 <CreditCard className="w-4 h-4 mr-2" />
                 Lihat Transaksi
+              </Button>
+              <Button 
+                className="w-full justify-start" 
+                variant="outline"
+                onClick={() => router.push('/admin/mikrotik')}
+              >
+                <Server className="w-4 h-4 mr-2" />
+                MikroTik Management
               </Button>
               {isSuperAdmin && (
                 <Button 
