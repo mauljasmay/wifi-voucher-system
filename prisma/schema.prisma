@@ -12,7 +12,7 @@ model Admin {
   email     String    @unique
   password  String
   name      String
-  role      Role      @default("ADMIN")
+  role      Role      @default(ADMIN)
   isActive  Boolean   @default(true)
   lastLogin DateTime?
   createdAt DateTime  @default(now())
