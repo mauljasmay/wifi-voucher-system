@@ -83,7 +83,7 @@ rm -rf wifi-voucher-system-main main.zip
 ### 3. Setup cPanel Files
 ```bash
 # Copy cPanel-specific package.json
-cp package-cpanel.json package.json
+cp package-cpanel-simple.json package.json
 
 # Copy environment template
 cp .env.cpanel .env

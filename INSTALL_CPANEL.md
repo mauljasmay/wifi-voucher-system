@@ -86,7 +86,7 @@ app.prepare().then(() => {
 ```
 
 ### Update package.json for cPanel
-Modify your `package.json` to include cPanel-specific configurations:
+Modify your `package.json` to include cPanel-specific configurations (use `package-cpanel-simple.json` as reference):
 
 ```json
 {

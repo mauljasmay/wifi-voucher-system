@@ -95,7 +95,7 @@ setup_cpanel_files() {
     print_status "Setting up cPanel-specific files..."
     
     # Copy cPanel package.json
-    cp package-cpanel.json package.json
+    cp package-cpanel-simple.json package.json
     
     # Copy environment template
     cp .env.cpanel .env.template
