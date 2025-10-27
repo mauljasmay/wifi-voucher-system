@@ -1,0 +1,40 @@
+{
+  "name": "wifi-voucher-system-minimal",
+  "version": "1.0.0",
+  "description": "WiFi Voucher System - Minimal Version for Troubleshooting",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "next build",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push"
+  },
+  "keywords": [
+    "wifi",
+    "voucher",
+    "mikrotik",
+    "hotspot",
+    "nextjs",
+    "cpanel",
+    "minimal"
+  ],
+  "author": "MLJ-NET",
+  "license": "MIT",
+  "dependencies": {
+    "next": "^14.2.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "@prisma/client": "^5.16.2",
+    "prisma": "^5.16.2",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "node-routeros": "^1.6.9",
+    "axios": "^1.6.8",
+    "qrcode": "^1.5.3",
+    "z-ai-web-dev-sdk": "^0.0.10"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}
