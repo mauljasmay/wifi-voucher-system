@@ -15,7 +15,7 @@ async function main() {
       email: 'admin@mljnet.com',
       password: hashedPassword,
       name: 'Admin MLJ-NET',
-      role: 'admin'
+      role: 'ADMIN'
     }
   })
   console.log('Created admin:', admin)

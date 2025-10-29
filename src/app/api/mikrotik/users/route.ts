@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
     try {
       await mikrotik.connect();
 
-      let users = [];
+      let users: any[] = [];
       
       if (active === 'true') {
         users = await mikrotik.getActiveUsers();

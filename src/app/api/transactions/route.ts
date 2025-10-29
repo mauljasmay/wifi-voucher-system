@@ -84,8 +84,8 @@ export async function POST(request: NextRequest) {
             username,
             password,
             profile: voucher.mikrotikProfile || mikrotikSettings.defaultProfile || 'default',
-            timeLimit: voucher.timeLimit,
-            dataLimit: voucher.dataLimit,
+            timeLimit: voucher.timeLimit ?? undefined,
+            dataLimit: voucher.dataLimit ?? undefined,
             comment: `Voucher: ${voucher.name} - Customer: ${customerName || 'Anonymous'} - Transaction: ${transaction.id}`
           }
 
@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
             password,
             profile: voucherData.profile,
             voucherCode: `${username}/${password}`
-          }
+          } as any
 
           await mikrotik.disconnect()
         }

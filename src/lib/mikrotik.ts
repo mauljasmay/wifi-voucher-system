@@ -1,4 +1,4 @@
-import RouterOS from 'node-routeros';
+import { RouterOSAPI } from 'node-routeros';
 import axios from 'axios';
 
 export interface MikroTikConfig {
@@ -53,7 +53,7 @@ export interface VoucherData {
 
 export class MikroTikManager {
   private config: MikroTikConfig;
-  private connection: RouterOS | null = null;
+  private connection: RouterOSAPI | null = null;
 
   constructor(config: MikroTikConfig) {
     this.config = {
@@ -79,13 +79,14 @@ export class MikroTikManager {
 
   private async connectV6(): Promise<void> {
     try {
-      this.connection = await RouterOS.connect({
+      const api = new RouterOSAPI({
         host: this.config.host,
         port: this.config.port,
         user: this.config.username,
         password: this.config.password,
         timeout: this.config.timeout
       });
+      this.connection = await api.connect();
     } catch (error) {
       throw new Error(`RouterOS v6 connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -174,11 +175,11 @@ export class MikroTikManager {
       const result = await this.connection.write('/ip/hotspot/user/add', userParams);
       
       // Get the created user details
-      const users = await this.connection.write('/ip/hotspot/user/print', {
-        '?name': voucherData.username
-      });
+      const users = await this.connection.write('/ip/hotspot/user/print', [
+        '?name=' + voucherData.username
+      ]);
 
-      return users[0];
+      return users[0] as any;
     } catch (error) {
       throw new Error(`Failed to create voucher: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -190,11 +191,11 @@ export class MikroTikManager {
     }
 
     try {
-      const users = await this.connection.write('/ip/hotspot/user/print', {
-        '?name': username
-      });
+      const users = await this.connection.write('/ip/hotspot/user/print', [
+        '?name=' + username
+      ]);
 
-      return users.length > 0 ? users[0] : null;
+      return users.length > 0 ? (users[0] as any) : null;
     } catch (error) {
       throw new Error(`Failed to get user: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -219,10 +220,11 @@ export class MikroTikManager {
         throw new Error(`User ${username} not found or missing ID`);
       }
 
-      await this.connection.write('/ip/hotspot/user/set', {
+      const setParams: any = {
         '.id': targetUser['.id'],
         ...updates
-      });
+      };
+      await this.connection.write('/ip/hotspot/user/set', setParams);
     } catch (error) {
       throw new Error(`Failed to update user: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -241,9 +243,9 @@ export class MikroTikManager {
         throw new Error(`User ${username} not found`);
       }
 
-      await this.connection.write('/ip/hotspot/user/remove', {
-        '.id': targetUser['.id']
-      });
+      await this.connection.write('/ip/hotspot/user/remove', [
+        '=.id=' + targetUser['.id']
+      ]);
     } catch (error) {
       throw new Error(`Failed to delete user: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -256,7 +258,7 @@ export class MikroTikManager {
 
     try {
       const profiles = await this.connection.write('/ip/hotspot/user/profile/print');
-      return profiles;
+      return profiles as any;
     } catch (error) {
       throw new Error(`Failed to get profiles: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -269,7 +271,7 @@ export class MikroTikManager {
 
     try {
       const activeUsers = await this.connection.write('/ip/hotspot/active/print');
-      return activeUsers;
+      return activeUsers as any;
     } catch (error) {
       throw new Error(`Failed to get active users: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -281,10 +283,10 @@ export class MikroTikManager {
     }
 
     try {
-      const users = await this.connection.write('/ip/hotspot/user/print', {
-        '?profile': profile
-      });
-      return users;
+      const users = await this.connection.write('/ip/hotspot/user/print', [
+        '?profile=' + profile
+      ]);
+      return users as any;
     } catch (error) {
       throw new Error(`Failed to get users by profile: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -298,7 +300,7 @@ export class MikroTikManager {
     try {
       const user = await this.getUser(username);
       const activeUsers = await this.getActiveUsers();
-      const activeUser = activeUsers.find(u => u.user === username);
+      const activeUser = activeUsers.find((u: any) => u.user === username || u.name === username);
 
       return {
         user,

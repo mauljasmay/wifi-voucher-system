@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     const validation = voucherSchema.safeParse(body);
     if (!validation.success) {
       return NextResponse.json(
-        { error: 'Data tidak valid', details: validation.error.errors },
+        { error: 'Data tidak valid', details: validation.error.issues },
         { status: 400 }
       );
     }
@@ -122,7 +122,7 @@ export async function PUT(request: NextRequest) {
     const validation = voucherSchema.partial().safeParse(updateData);
     if (!validation.success) {
       return NextResponse.json(
-        { error: 'Data tidak valid', details: validation.error.errors },
+        { error: 'Data tidak valid', details: validation.error.issues },
         { status: 400 }
       );
     }

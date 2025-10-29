@@ -22,8 +22,8 @@ export async function POST(request: NextRequest) {
     // Create unique order ID
     const orderId = `MLJ-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
-    // Prepare payload for Tripay
-    const payload = {
+    // Prepare payload for Tripay (without signature first)
+    const payloadData = {
       method: 'QRIS', // Fixed to QRIS only
       merchant_code: TRIPAY_MERCHANT_CODE,
       amount: amount,
@@ -41,8 +41,13 @@ export async function POST(request: NextRequest) {
       ],
       callback_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/tripay/callback`,
       return_url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/vouchers/payment-status`,
-      expired_time: Math.floor(Date.now() / 1000) + (24 * 60 * 60), // 24 hours expiry
-      signature: generateSignature(payload)
+      expired_time: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 hours expiry
+    }
+
+    // Add signature to payload
+    const payload = {
+      ...payloadData,
+      signature: generateSignature(payloadData)
     }
 
     // Make request to Tripay API
